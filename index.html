@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Нарративная прогулка</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,100..900;1,100..900&family=Pangolin&family=Special+Elite&family=Underdog&family=Viaoda+Libre&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Noto Serif", serif;
+            color: #e0e0e0;
+            background: #1a1a1a;
+            overflow-x: hidden;
+        }
+
+        /* Общие стили для заголовков */
+        h1, h2, h3 {
+            font-family: "Underdog", system-ui;
+            font-weight: 400;
+            color: #e0e0e0;
+        }
+
+        strong {
+            font-family: "Underdog", system-ui;
+            font-weight: 400;
+        }
+
+        /* Контейнер для всех страниц */
+        .app-container {
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Базовый стиль для всех страниц с фоновым изображением */
+        .page {
+            display: none;
+            min-height: 100vh;
+            padding: 40px 20px;
+            position: relative;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .page.active {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.20;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .page-content {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Вступительные слайды и разделы */
+        .intro-page, .section-page {
+            text-align: center;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .intro-content, .section-content {
+            background: rgba(30, 30, 30, 0.15);
+            padding: 60px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            margin-bottom: 40px;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .intro-content p, .section-content p {
+            font-family: "Noto Serif", serif;
+            font-size: 1.2em;
+            line-height: 1.8;
+            color: #e0e0e0;
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        /* Кнопки */
+        .next-btn, .journey-btn {
+            background: rgba(200, 200, 200, 0.2);
+            border: 1px solid rgba(200, 200, 200, 0.3);
+            color: #e0e0e0;
+            font-family: "Noto Serif", serif;
+            font-size: 1.4em;
+            padding: 20px 60px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+            margin: 20px auto;
+            display: block;
+        }
+
+        .next-btn:hover, .journey-btn:hover {
+            background: rgba(200, 200, 200, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Слайд выбора пути */
+        .path-choice-page {
+            justify-content: center;
+            align-items: center;
+        }
+
+        .path-choice-content {
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .path-choice-text {
+            text-align: center;
+            margin-bottom: 40px;
+            font-size: 1.3em;
+            color: #e0e0e0;
+            background: rgba(30, 30, 30, 0.15);
+            padding: 30px;
+            border-radius: 12px;
+        }
+
+        .paths-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+        }
+
+        .path-option {
+            cursor: pointer;
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            transition: transform 0.3s, box-shadow 0.3s;
+            background: rgba(30, 30, 30, 0.15);
+        }
+
+        .path-option:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+        }
+
+        .path-option img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .path-text {
+            padding: 30px;
+            text-align: center;
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #e0e0e0;
+        }
+
+        /* Слайд с заданием */
+        .task-page {
+            justify-content: flex-start;
+            padding: 20px;
+        }
+
+        .task-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+            min-height: 600px;
+        }
+
+        .task-name {
+            grid-column: 1;
+            grid-row: 1;
+            background: rgba(30, 30, 30, 0.15);
+            padding: 20px;
+            border-radius: 8px;
+            font-family: "Underdog", system-ui;
+            font-size: 1.5em;
+            font-weight: 400;
+            color: #e0e0e0;
+        }
+
+        .task-location {
+            grid-column: 2;
+            grid-row: 1;
+            background: rgba(30, 30, 30, 0.15);
+            padding: 20px;
+            border-radius: 8px;
+            font-family: "Underdog", system-ui;
+            font-size: 1.5em;
+            font-weight: 400;
+            text-align: right;
+            color: #e0e0e0;
+        }
+
+        .task-description {
+            grid-column: 1;
+            grid-row: 2;
+            background: rgba(30, 30, 30, 0.15);
+            padding: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: "Pangolin", cursive;
+            font-size: 1.3em;
+            line-height: 1.8;
+            text-align: center;
+            color: #e0e0e0;
+        }
+
+        .task-photo-btn {
+            grid-column: 2;
+            grid-row: 2;
+            background: rgba(30, 30, 30, 0.15);
+            padding: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            border: 2px dashed rgba(200, 200, 200, 0.3);
+            transition: all 0.3s;
+            font-family: "Noto Serif", serif;
+            font-size: 1.2em;
+            color: #e0e0e0;
+            text-align: center;
+        }
+
+        .task-photo-btn:hover {
+            background: rgba(30, 30, 30, 0.25);
+            border-color: rgba(200, 200, 200, 0.5);
+            color: #f0f0f0;
+        }
+
+        /* Выбор фотографий */
+        .photo-selection-page {
+            justify-content: flex-start;
+            padding: 40px 20px;
+        }
+
+        .photos-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 30px;
+        }
+
+        .photo-item {
+            position: relative;
+            cursor: pointer;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .photo-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+
+        .photo-item.selected {
+            border: 4px solid #4CAF50;
+            box-shadow: 0 0 0 4px rgba(76, 175, 80, 0.3);
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-checkmark {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #4CAF50;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .photo-item.selected .photo-checkmark {
+            display: flex;
+        }
+
+        .continue-btn {
+            padding: 20px 60px;
+            background: rgba(200, 200, 200, 0.2);
+            color: #e0e0e0;
+            border: 1px solid rgba(200, 200, 200, 0.3);
+            border-radius: 8px;
+            font-family: "Noto Serif", serif;
+            font-size: 1.4em;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .continue-btn:hover {
+            background: rgba(200, 200, 200, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .continue-btn:disabled {
+            background: rgba(100, 100, 100, 0.2);
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        /* Слайд после выбора фото */
+        .narrative-page {
+            justify-content: space-between;
+            padding: 40px;
+        }
+
+        .narrative-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            width: 100%;
+            max-width: 1400px;
+            min-height: calc(100vh - 80px);
+            align-content: center;
+        }
+
+        .narrative-text {
+            background: rgba(30, 30, 30, 0.15);
+            padding: 40px;
+            border-radius: 8px;
+            font-family: "Noto Serif", serif;
+            font-size: 1.6em;
+            line-height: 1.8;
+            align-self: start;
+            margin-top: 15%;
+            color: #e0e0e0;
+        }
+
+        .cliffhanger-block {
+            background: rgba(30, 30, 30, 0.15);
+            padding: 40px;
+            border-radius: 8px;
+            font-family: "Noto Serif", serif;
+            font-size: 1.6em;
+            line-height: 1.8;
+            font-style: italic;
+            align-self: end;
+            margin-bottom: 15%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            color: #e0e0e0;
+        }
+
+        .cliffhanger-text {
+            margin-bottom: 30px;
+        }
+
+        /* Финальная галерея */
+        .final-gallery-page {
+            justify-content: center;
+            align-items: center;
+        }
+
+        .final-gallery-content {
+            background: rgba(30, 30, 30, 0.15);
+            padding: 60px 40px;
+            border-radius: 12px;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        .final-gallery-content h1 {
+            text-align: center;
+            margin-bottom: 40px;
+            font-family: "Underdog", system-ui;
+            font-size: 2.5em;
+            color: #e0e0e0;
+        }
+
+        .final-gallery-content p {
+            text-align: center;
+            font-family: "Noto Serif", serif;
+            font-size: 1.2em;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            color: #e0e0e0;
+        }
+
+        .final-photos-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .final-photo-item {
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 1;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .final-photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Призыв к действию */
+        .action-page {
+            justify-content: center;
+            align-items: center;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+
+        .action-btn {
+            background: rgba(200, 200, 200, 0.2);
+            border: 1px solid rgba(200, 200, 200, 0.3);
+            color: #e0e0e0;
+            font-family: "Noto Serif", serif;
+            font-size: 1.2em;
+            padding: 20px 50px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: rgba(200, 200, 200, 0.3);
+            transform: translateY(-2px);
+        }
+
+        /* Название проекта */
+        .project-title {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            font-family: "Underdog", system-ui;
+            font-size: 1.5em;
+            color: #e0e0e0;
+            z-index: 10;
+            background: rgba(30, 30, 30, 0.3);
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Вступительные слайды -->
+        <div class="page intro-page active" id="intro-1" data-bg-folder="фоны_вступление">
+            <div class="project-title">Прорубь: Пространства Петербурга</div>
+            <div class="page-content">
+                <div class="intro-content">
+                    <p>Петербург. Мы каждый день проходим мимо выстроенных в ровные ряды линий фасадов. Но что, если за этими фасадами скрывается другой Петербург? Тот, что существует в разломах между проспектами, в пространстве дворов и переулков.</p>
+                    <p>Этот город не нанесен на туристические карты. Он ускользает от взгляда структур власти, прячется за калитками и арками. Но возможно именно он способен подарить тебе впечатления, что изменят тебя.</p>
+                    <p>Готов ли ты попытаться увидеть город иначе?</p>
+                </div>
+                <button class="next-btn" onclick="nextPage()">Начать путешествие</button>
+            </div>
+        </div>
+
+        <div class="page intro-page" id="intro-2" data-bg-folder="фоны_вступление">
+            <div class="project-title">Прорубь: Пространства Петербурга</div>
+            <div class="page-content">
+                <div class="intro-content">
+                    <p> Любой город — это поле напряжения между геометрическим порядком власти и хаотичностью жизни. Петербург был задуман как город торжества мысли — прямые проспекты, регулярная планировка, победа разума над природой. </p>
+                    <p> Но город живет своей жизнью: обживаются побочные пространства дворов, протаптываются тропинки, создаются стихийные ярмарки, локальные заведения.</p>
+                    <p> Пространства, порой не задуманные градостроителями, пространства, где стена становится холстом для художника, забор — медиумом для высказывания, а двор — лабиринтом для исследователя. Что если попытаться отбросить предписания культурных канонов?</p>
+                </div>
+                <button class="next-btn" onclick="nextPage()">Продолжить</button>
+            </div>
+        </div>
+
+        <div class="page intro-page" id="intro-3" data-bg-folder="фоны_вступление">
+            <div class="project-title">Прорубь: Пространства Петербурга</div>
+            <div class="page-content">
+                <div class="intro-content">
+                    <p><strong>Как это работает:</strong></p>
+                    <p>Ты запустил приложение в режиме онлайн-прогулки. Это неопределённое путешествие с 6 заданиями. Отправившись в пространства города попытайся найти ответ сам и правильного здесь нет. Мы же предлагаем тебе целую галерею разнообразных референсов - попробуй прислушаться к своим чувствам и найти среди них тот, что откликается в твоём сердце.</p>
+                    <p>После выполнения заданий у тебя останется галерея — твой личный архив города. Ты можешь сохранить его или же попытаться отыскать заинтересовавшее тебя место</p>
+                </div>
+                <button class="next-btn" onclick="nextPage()">далее</button>
+            </div>
+        </div>
+
+        <!-- Слайд выбора пути -->
+        <div class="page path-choice-page" id="path-choice" data-bg-folder="фоны_вступление">
+            <div class="page-content">
+                <div class="path-choice-content">
+                    <div class="path-choice-text">
+                        <p>Представь: у тебя есть пару часов свободного времени в Петербурге. Что ты выберешь?</p>
+                    </div>
+                    <div class="paths-container">
+                        <div class="path-option" data-path="1">
+                            <img src="path1.jpg" alt="Путь дворцов" id="path1-img">
+                            <div class="path-text">
+                                "Прогуляться по главным проспектам и площадям, почувствовать величие города"
+                            </div>
+                        </div>
+                        <div class="path-option" data-path="2">
+                            <img src="path2.jpg" alt="Путь дворов" id="path2-img">
+                            <div class="path-text">
+                                Нырнуть в лабиринт дворов, исследовать наслоения друг на друга кубов зданий, тропинок, арок, тупиков, деревьев. 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Слайды после выбора пути будут созданы динамически -->
+        <!-- Завершающие слайды -->
+        <div class="page final-gallery-page" id="final-archive" data-bg-folder="фоны_заключение">
+            <div class="project-title">Прорубь: Пространства Петербурга</div>
+            <div class="page-content">
+                <div class="final-gallery-content">
+                    <h1>Архив</h1>
+                    <p>Вот твой архив. Здесь кусочки Петербурга, что откликнулись тебе.</p>
+                    <div class="final-photos-grid" id="final-gallery">
+                        <!-- Выбранные фотографии будут показаны здесь -->
+                    </div>
+                    <button class="next-btn" onclick="nextPage()">далее</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="page section-page" id="final-reflection" data-bg-folder="фоны_заключение">
+            <div class="project-title">Прорубь: Пространства Петербурга</div>
+            <div class="page-content">
+                <div class="section-content">
+                    <p>Ты начал с выбора — какой путь пройти: начать его от центральных площадей и парадных фасадов или сразу свернуть во дворы.</p>
+                    <p>Но мы попытались сформировать каждый путь так, чтобы прийти в пограничные неисследованные городские пространства, способные вызвать эмоции, выходящие за рамки обыденных.</p>
+                    <p>И чтобы достичь этого - мы не ограничивали твоих выборов, так, что если ты повторишь дивжение по предложенным ориентирам, результатом может стать твой личный вклад в город - твоя грань кристалла его восприятий</p>
+                </div>
+                <button class="next-btn" onclick="nextPage()">далее</button>
+            </div>
+        </div>
+
+
+        <div class="page section-page action-page" id="final-action" data-bg-folder="фоны_заключение">
+            <div class="project-title">Прорубь: Пространства Петербурга</div>
+            <div class="page-content">
+                <div class="section-content">
+                    <p>Ты получил свой архив, но мы не указываем тебе точных координат. Если какое-то здание или атмосфера фотографии задела тебя - отправляйся в город и попытайся отыскать её, быть может прийдя к тому, чего не искал.</p>
+                    <p>Ещё ты можешь попробовать пройти другой путь, который мы предлагаем, или повторить пройденный, изменив выбор</p>
+                </div>
+                <div class="action-buttons">
+                    <button class="action-btn" onclick="restartJourney()">Завершить путь и пойти исследовать живой город</button>
+                    <button class="action-btn" onclick="chooseDifferentPath()">Выбрать другой путь</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Данные заданий (встроены в HTML для работы без сервера)
+        const tasksData = {
+            "routes": [
+                {
+                    "route": 1,
+                    "name": "Дворцы",
+                    "tasks": [
+                        {
+                            "number": 1,
+                            "name": "Задание 1",
+                            "location": "Дворцы или парадные фасады",
+                            "task": "Отправляйся в Адмиралтейский или Центральный район, иди, пока не найдёшь дворец или величественный доходный дом, который покажется тебе привлекательным именно сегодня. Рассмотри его фасад — колонны, лепнину, окна. Теперь найди деталь, которую обычно не замечают. Трещину, след времени, элемент, выбивающийся из симметрии. Сфотографируй.",
+                            "narrative": "Возможно, какие-то из этих зданий ты уже видел не раз - на экскурсиях, на картинках в интернете, в книжках. Но если получится - на них можно взглянуть иначе, они станут образами, преображающими твою душу.",
+                            "cliffhanger": "Далее попробуй перейти от общего плана к уровню деталей."
+                        },
+                        {
+                            "number": 2,
+                            "name": "Задание 2",
+                            "location": "Дворцы или парадные фасады",
+                            "task": " Теперь рассмотри фасад впечатлившего тебя здания — барельефы, формы оконных рам, пилястры. Одну из этих малых деталей сфотографируй.",
+                            "narrative": "Ты привык видеть эти здания как декорации. Величественные, золотые, идеальные. Но присмотрись внимательнее: трещина в штукатурке, облупившаяся краска — здание продолжает своё бытие уже помимо замысла архитектора. Имперский город может казаться вечным и неизменным. Но он меняется и стареет. Ты только что сделал первый шаг к взгляду на город не как на памятник, а как на живой организм.",
+                            "cliffhanger": "Но фасад — это только внешняя сторона. Что скрывается за парадными воротами? Следующая точка — там, где начинается изнанка."
+                        },
+                        {
+                            "number": 3,
+                            "name": "Задание 3",
+                            "location": "Переход во дворы",
+                            "task": "Найди черный ход, ведущий из парадной во двор. Сфотографируй переход из официального пространства в неофициальное.",
+                            "narrative": "Парадный вход — для тех, кто имеет право быть видимым. Широкие двери, украшенные порталы, чистые ступени. Чёрный ход — для тех, кто обслуживает эту видимость. Узкая дверь, облупленная краска, мусорные баки. Город всегда создаёт границы между 'парадным' и 'служебным', между тем, что показывают, и тем, что прячут.", 
+                            "cliffhanger": "Ты вошел в побочное пространство. Следующая точка там, где сталкиваются два мира."
+                        },
+                        {
+                            "number": 4,
+                            "name": "Задание 4",
+                            "location": "Дворовая стена с уличным искусством / надписями",
+                            "task": "Найди граффити или надпись на историческом здании. Сфотографируй диалог между историей и современным высказыванием.",
+                            "narrative": "На стенах пишут те, кому отказано в официальных каналах выражения. Граффити — это голос тех, кто хочет быть услышанным, но не может войти через парадный вход.",
+                            "cliffhanger": "Теперь пора найти случайный путь к тому, что определяет этот город... к воде"
+                        },
+                        {
+                            "number": 5,
+                            "name": "Задание 5",
+                            "location": "Набережная канала или реки",
+                            "task": "Найди место на набережной, где можно подойти близко к воде. Посмотри на отражение города в воде. Сфотографируй это отражение — не сам город, а его зеркальную версию.",
+                            "narrative": "Петербург — город на воде. Его каналы и реки делят город на острова, определяют маршруты. Попробуй всмотреться в отражения в воде, почувствовать запах воды. В фотографии можно поймать мгновение, когда город и его отражение сосуществуют — это момент, когда два города - реальный и отражённый - существуют одновременно.",
+                            "cliffhanger": "Ты прошёл путь  от парадного города до его скрытой изнанки, а от неё вышел к воде. Остался последний шаг. Место, которое выберешь ты."
+                        },
+                        {
+                            "number": 6,
+                            "name": "Задание 6",
+                            "location": "Любое отзывающееся место",
+                            "task": "Попробуй идти по городу, улица за улицей, заходя во дворы, заведения, всматриваясь в мир, пока не найдёшь что-то, что откликается в тебе. Попытайся понять, почему оно важно для тебя, какие воспоминания вызывает, после чего, можешь запечатлеть место на память.",
+                            "narrative": "Так ты нашёл место, которое почему-то притягательно для тебя. Быть может, необязательно даже понимать почему. Это не свести к истории города, его архитектуре, пусть это останется с тобой, быть может ты сможешь отыскать это место снова, уже в реальности.",
+                            "cliffhanger": "Теперь ты готов увидеть город по-новому. К финалу пути..."
+                        }
+                    ]
+                },
+                {
+                    "route": 2,
+                    "name": "Дворы",
+                    "tasks": [
+                        {
+                            "number": 1,
+                            "name": "Задание 1",
+                            "location": "Калитка/арка во двор",
+                            "task": "Отправляйся на улицы Петроградского или Васильевского острова и найди калитку, которая выглядит закрытой, но открывается. За ней — пространство двора. Сфотографируй то, что увидишь в глубине.",
+                            "narrative": "Ты только что пересёк невидимую границу. Калитки Васильевского или Петроградского островов — это не просто двери. Это порталы в параллельный город, который существует между проспектами. Здесь редко встретишь туристов, а чаще всего видно лишь стены, которые помнят больше, чем любой из живущих людей. Посмотри на фотографии. Что ты видишь? Облупившуюся штукатурку? Граффити? Старое дерево? Всё это — следы жизни, которая не попала на городские открытки и теперь ты её свидетель.",
+                            "cliffhanger": "Но калитки — это только начало. Есть более глубокие слои. Следующая подсказка ждёт тебя там, где есть символы на стенах"
+                        },
+                        {
+                            "number": 2,
+                            "name": "Задание 2",
+                            "location": "Дворовая стена",
+                            "task": "Найди объект уличного искусства, граффити или просто надпись на стене.",
+                            "narrative": "Дворовая стена — это медиум. Порой на них можно увидеть крики человеческой души, следы тех, кто заявляет о себе в пространстве, которое игнорирует их существование.",
+                            "cliffhanger": "Но кто эти люди, которые оставляют следы? Где они сейчас? Следующая точка — там, где пересекаются пути."
+                        },
+                        {
+                            "number": 3,
+                            "name": "Задание 3",
+                            "location": "Дворовые тропинки",
+                            "task": "Найди путь, которого нет на картах. Тропинку из одного двора в другой. Запечатлей её и пройди через неё в следующее пространство.",
+                            "narrative": "Архитекторы проектируют пути. Но не все тропинки отлиты асфальтом или проложены плиткой. Но и проведённые дороги бывают переосвоенны. Посмотри на тропинку, что ты запечатлел: сколько людей прошло здесь? Твоя фотография зафиксировала один момент в бесконечном потоке движения.",
+                            "cliffhanger": "Что дальше? Поищем объекты, специфичные для дворов, утаённые от взглядов."
+                        },
+                        {
+                            "number": 4,
+                            "name": "Задание 4",
+                            "location": "Неприглядное здание",
+                            "task": "Найди во дворе что-то самодельное: старое техническое здание, флигель, пристройку, самодельную пристройку к зданию. Сфотографируй это место.",
+                            "narrative": "Так ты обратил внимание на те объекты, которые часто игнорируются, на которых редко задерживается взгляд. Но хотя бы поэтому они могут стать тем незаношенным, что вступит в контакт с тобой.",
+                            "cliffhanger": "Ты исследовал одно комнату лабиринта - посмотри, не виден ли впереди переход в следующую?"
+                        },
+                        {
+                            "number": 5,
+                            "name": "Задание 5",
+                            "location": "Переходы между дворами",
+                            "task": "Найди проход в следующий двор. Потом ещё один. Не пользуйся навигатором — иди интуитивно. Когда почувствуешь, что потерял ориентацию, остановись и сфотографируй то, что перед тобой.",
+                            "narrative": "Хорошо, если ты заблудился -  в этот момент ты перестал контролировать пространство и пространство открылось тебе. Когда ты не знаешь, где ты, ты начинаешь по-настоящему видеть и каждая деталь становится значимой: облупившаяся краска, трещина в стене, звук голосов из окна, запах, свет, падающий из-за угла. Перед тобой много направлений для движения, но к чему они тебя выведут? ",
+                            "cliffhanger": "Ты нашёл выход? или вернулся назад? В любом случае — впереди последний шаг."
+                        },
+                        {
+                            "number": 6,
+                            "name": "Задание 6",
+                            "location": "Твоё место",
+                            "task": "Попробуй идти по городу, улица за улицей, заходя во дворы, заведения, всматриваясь в мир, пока не найдёшь что-то, что откликается в тебе. Попытайся понять, почему оно важно для тебя, какие воспоминания вызывает, после чего, можешь запечатлеть на память.",
+                            "narrative": "Так ты нашёл место, которое почему-то притягательно для тебя. Быть может, необязательно даже понимать почему. Это не свести к истории города, его архитектуре, пусть это останется с тобой, быть может ты сможешь отыскать это место снова, уже выйдя на улицы.",
+                            "cliffhanger": "К финалу пути — архиву твоих открытий."
+                        }
+                    ]
+                }
+            ]
+        };
+
+        // Состояние приложения
+        const appState = {
+            currentPath: null, // 1 или 2
+            currentQuestion: 0,
+            selectedPhotos: [],
+            tasksData: tasksData, // Используем встроенные данные
+            totalQuestions: 6
+        };
+
+        // Порядок страниц
+        let pageFlow = [
+            'intro-1',
+            'intro-2',
+            'intro-3', // Добавляем новый слайд
+            'path-choice',
+            // ...existing code...
+        ];
+
+        // Фоновые изображения по папкам
+        const backgroundFolders = {
+            'фоны_вступление': ['1.jpg', '2.jpeg', '3.jpg'],
+            'фоны_дворцы': ['1.jpg', '2.jpg', '3.JPG'],
+            'фоны_дворы': ['1.jpg', '2.jpg', '3.JPG', '4.JPG'],
+            'фоны_заключение': ['1.jpg', '2.jpg', '3.jpg']
+        };
+
+        // Установить случайный фон для страницы
+        function setRandomBackground(pageElement) {
+            const folder = pageElement.getAttribute('data-bg-folder');
+            if (folder && backgroundFolders[folder]) {
+                const images = backgroundFolders[folder];
+                const randomImage = images[Math.floor(Math.random() * images.length)];
+                const folderPath = folder;
+                // Устанавливаем фон через стиль для псевдоэлемента ::before
+                const style = document.createElement('style');
+                style.textContent = `
+                    #${pageElement.id}::before {
+                        background-image: url('${folderPath}/${randomImage}') !important;
+                    }
+                `;
+                if (!document.getElementById(`style-${pageElement.id}`)) {
+                    style.id = `style-${pageElement.id}`;
+                    document.head.appendChild(style);
+                } else {
+                    document.getElementById(`style-${pageElement.id}`).textContent = style.textContent;
+                }
+            }
+        }
+
+        // Данные уже инициализированы в appState.tasksData при создании объекта
+
+        // Показать конкретную страницу
+        function showPage(pageId) {
+            console.log('Показываем страницу:', pageId);
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            const targetPage = document.getElementById(pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+                setRandomBackground(targetPage);
+                console.log('Страница показана:', pageId);
+                
+                // Если это страница выбора пути, убедимся, что обработчики инициализированы
+                if (pageId === 'path-choice') {
+                    initPathSelection();
+                }
+            } else {
+                console.error('Страница не найдена:', pageId);
+                // Попробуем найти через небольшую задержку (для динамически созданных страниц)
+                setTimeout(() => {
+                    const retryPage = document.getElementById(pageId);
+                    if (retryPage) {
+                        retryPage.classList.add('active');
+                        setRandomBackground(retryPage);
+                        console.log('Страница найдена при повторной попытке:', pageId);
+                    } else {
+                        console.error('Страница так и не найдена после повторной попытки:', pageId);
+                    }
+                }, 200);
+            }
+        }
+
+        // Переход на следующую страницу
+        function nextPage() {
+            const currentPage = document.querySelector('.page.active');
+            if (!currentPage) return;
+
+            const currentId = currentPage.id;
+            const currentIndex = pageFlow.indexOf(currentId);
+
+            if (currentIndex < pageFlow.length - 1) {
+                showPage(pageFlow[currentIndex + 1]);
+            }
+        }
+
+        // Выбор пути
+        function selectPath(pathNumber) {
+            console.log('selectPath вызван с pathNumber:', pathNumber);
+            
+            if (!appState.tasksData) {
+                console.error('Задачи не инициализированы');
+                alert('Ошибка: данные не загружены. Пожалуйста, обновите страницу.');
+                return;
+            }
+            
+            appState.currentPath = pathNumber;
+            appState.currentQuestion = 0;
+            appState.selectedPhotos = [];
+            
+            console.log('Создаем страницы для пути:', pathNumber);
+            // Создаем страницы для выбранного пути
+            createPathPages(pathNumber);
+            
+            // Переходим к первому слайду после выбора
+            // Даем время на создание страниц
+            setTimeout(() => {
+                const targetPageId = `path-selected-${pathNumber}`;
+                console.log('Попытка перейти на страницу:', targetPageId);
+                showPage(targetPageId);
+            }, 300);
+        }
+        
+        // Делаем функции глобальными для вызова из onclick
+        window.selectPath = selectPath;
+        window.nextPage = nextPage;
+        window.startTasks = startTasks;
+        window.goToPhotoSelection = goToPhotoSelection;
+        window.continueAfterPhotos = continueAfterPhotos;
+        window.nextTask = nextTask;
+        window.restartJourney = restartJourney;
+        window.chooseDifferentPath = chooseDifferentPath;
+
+        // Создать страницы для выбранного пути
+        function createPathPages(pathNumber) {
+            const container = document.querySelector('.app-container');
+            
+            // Слайд после выбора пути
+            const pathSelectedText = pathNumber === 1 
+                ? 'Ты выбрал путь парадного города. Это выбор тех, кто ценит величие, историю, застывшую в камне. Но даже среди стройных рядов парадных фасадов есть зазоры. За каждой парадной - черный ход. За каждым проспектом — переулок.\n\nСегодня ты сможешь попытаться увидеть эти трещины. Ты поймешь, что даже в самом структурированном пространстве есть место неопределённости. Что город — это не только то, что показывают туристам.\n\nТы начнёшь путешествие в любой из точек центра, но закончится оно наверняка там, где ты должен будешь довериться интуиции, а не картам на телефоне.'
+                : 'Ты выбрал путь дворов. Это выбор тех, кто ищет скрытое, любит блуждать, чтобы потерять счёт времени и найти образ, который будет вспоминаться через года.\n\nТвое путешествие начнется с первого двора, но куда оно приведет — зависит только от тебя. Будь готов заблудиться. Будь готов найти то, чего не искал.';
+
+            const pathSelectedPage = document.createElement('div');
+            pathSelectedPage.className = 'page intro-page';
+            pathSelectedPage.id = `path-selected-${pathNumber}`;
+            pathSelectedPage.setAttribute('data-bg-folder', `фоны_${pathNumber === 1 ? 'дворцы' : 'дворы'}`);
+            pathSelectedPage.innerHTML = `
+                <div class="page-content">
+                    <div class="intro-content">
+                        ${pathSelectedText.split('\n\n').map(p => `<p>${p}</p>`).join('')}
+                    </div>
+                    <button class="next-btn" onclick="startTasks()">Я готов</button>
+                </div>
+            `;
+            container.insertBefore(pathSelectedPage, document.getElementById('final-archive'));
+            setRandomBackground(pathSelectedPage);
+
+            // Создаем страницы для всех 6 заданий
+            const routeData = appState.tasksData.routes.find(r => r.route === pathNumber);
+            if (!routeData) {
+                console.error('Маршрут не найден для pathNumber:', pathNumber);
+                alert('Ошибка: маршрут не найден. Пожалуйста, обновите страницу.');
+                return;
+            }
+            
+            console.log('Найден маршрут:', routeData);
+            console.log('Заданий в маршруте:', routeData.tasks.length);
+            
+            routeData.tasks.forEach((task, index) => {
+                createTaskPages(task, pathNumber, index + 1);
+            });
+
+            // Обновляем порядок страниц
+            updatePageFlow(pathNumber);
+            console.log('Порядок страниц обновлен:', pageFlow);
+        }
+
+        // Создать страницы для задания
+        function createTaskPages(task, pathNumber, taskNumber) {
+            const container = document.querySelector('.app-container');
+            const bgFolder = `фоны_${pathNumber === 1 ? 'дворцы' : 'дворы'}`;
+
+            // Слайд с заданием
+            const taskPage = document.createElement('div');
+            taskPage.className = 'page task-page';
+            taskPage.id = `task-${pathNumber}-${taskNumber}`;
+            taskPage.setAttribute('data-bg-folder', bgFolder);
+            taskPage.innerHTML = `
+                <div class="page-content">
+                    <div class="task-layout">
+                        <div class="task-name">${task.name}</div>
+                        <div class="task-location">${task.location}</div>
+                        <div class="task-description">${task.task}</div>
+                        <div class="task-photo-btn" onclick="goToPhotoSelection(${pathNumber}, ${taskNumber})">
+                            выбор фото
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertBefore(taskPage, document.getElementById('final-archive'));
+            setRandomBackground(taskPage);
+
+            // Слайд выбора фото
+            const photoPage = document.createElement('div');
+            photoPage.className = 'page photo-selection-page';
+            photoPage.id = `photo-selection-${pathNumber}-${taskNumber}`;
+            photoPage.setAttribute('data-bg-folder', bgFolder);
+            photoPage.innerHTML = `
+                <div class="page-content">
+                    <div class="photos-grid" id="photos-grid-${pathNumber}-${taskNumber}"></div>
+                    <button class="continue-btn" id="continue-${pathNumber}-${taskNumber}" onclick="continueAfterPhotos(${pathNumber}, ${taskNumber})" disabled>
+                        Продолжить
+                    </button>
+                </div>
+            `;
+            container.insertBefore(photoPage, document.getElementById('final-archive'));
+            setRandomBackground(photoPage);
+
+            // Слайд после выбора фото
+            const narrativePage = document.createElement('div');
+            narrativePage.className = 'page narrative-page';
+            narrativePage.id = `narrative-${pathNumber}-${taskNumber}`;
+            narrativePage.setAttribute('data-bg-folder', bgFolder);
+            narrativePage.innerHTML = `
+                <div class="page-content">
+                    <div class="narrative-layout">
+                        <div class="narrative-text">${task.narrative}</div>
+                        <div class="cliffhanger-block">
+                            <div class="cliffhanger-text">${task.cliffhanger}</div>
+                            <button class="next-btn" onclick="nextTask(${pathNumber}, ${taskNumber})">
+                                ${taskNumber < 6 ? 'далее' : 'далее'}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            container.insertBefore(narrativePage, document.getElementById('final-archive'));
+            setRandomBackground(narrativePage);
+        }
+
+        // Обновить порядок страниц
+        function updatePageFlow(pathNumber) {
+            pageFlow = [
+                'intro-1',
+                'intro-2',
+                'intro-3', // Добавляем новый слайд
+                'path-choice',
+                `path-selected-${pathNumber}`,
+                // Добавляем страницы заданий
+                `task-${pathNumber}-1`,
+                `photo-selection-${pathNumber}-1`,
+                `narrative-${pathNumber}-1`,
+                `task-${pathNumber}-2`,
+                `photo-selection-${pathNumber}-2`,
+                `narrative-${pathNumber}-2`,
+                `task-${pathNumber}-3`,
+                `photo-selection-${pathNumber}-3`,
+                `narrative-${pathNumber}-3`,
+                `task-${pathNumber}-4`,
+                `photo-selection-${pathNumber}-4`,
+                `narrative-${pathNumber}-4`,
+                `task-${pathNumber}-5`,
+                `photo-selection-${pathNumber}-5`,
+                `narrative-${pathNumber}-5`,
+                `task-${pathNumber}-6`,
+                `photo-selection-${pathNumber}-6`,
+                `narrative-${pathNumber}-6`,
+                'final-archive',
+                'final-reflection',
+                'final-action'
+            ];
+        }
+
+        // Начать задания
+        function startTasks() {
+            showPage(`task-${appState.currentPath}-1`);
+        }
+
+        // Переход к выбору фотографий
+        function goToPhotoSelection(pathNumber, taskNumber) {
+            showPage(`photo-selection-${pathNumber}-${taskNumber}`);
+            loadPhotosForTask(pathNumber, taskNumber);
+        }
+
+        // Загрузить фотографии для задания
+        function loadPhotosForTask(pathNumber, taskNumber) {
+            const grid = document.getElementById(`photos-grid-${pathNumber}-${taskNumber}`);
+            if (!grid) return;
+
+            grid.innerHTML = '<div style="text-align: center; padding: 20px; color: #e0e0e0; font-family: \'Noto Serif\', serif;">Загрузка фотографий...</div>';
+
+            const baseFolder = pathNumber === 1 ? 'дворцы_выбор' : 'дворы_выбор';
+            const taskFolder = `${baseFolder}/${taskNumber}`;
+            const extensions = ['jpg', 'JPG', 'jpeg', 'JPEG'];
+            
+            const loadedPhotos = [];
+
+            function tryLoadPhoto(photoNum) {
+                if (photoNum > 10) {
+                    if (loadedPhotos.length === 0) {
+                        grid.innerHTML = `<div style="text-align: center; padding: 40px; color: #e0e0e0; font-family: 'Noto Serif', serif;"><p>Фотографии не найдены.</p><p style="font-size: 0.9em; margin-top: 10px;">Убедитесь, что файлы находятся в папке:</p><p style="font-size: 0.85em; color: #b0b0b0; margin-top: 5px;">${taskFolder}</p><p style="font-size: 0.85em; margin-top: 10px;">Рекомендуется назвать файлы: 1.jpg, 2.jpg, …, 10.jpg (или .JPG / .jpeg)</p></div>`;
+                    }
+                    return;
+                }
+
+                let extIndex = 0;
+                let found = false;
+
+                function tryExtension() {
+                    if (extIndex >= extensions.length) {
+                        if (!found) {
+                            tryLoadPhoto(photoNum + 1);
+                        }
+                        return;
+                    }
+
+                    const ext = extensions[extIndex];
+                    const photoPath = `${taskFolder}/${photoNum}.${ext}`;
+
+                    const img = new Image();
+                    img.onload = function() {
+                        found = true;
+                        if (!loadedPhotos.find(p => p.path === photoPath)) {
+                            loadedPhotos.push({
+                                path: photoPath,
+                                index: loadedPhotos.length
+                            });
+                            addPhotoToGrid(photoPath, loadedPhotos.length - 1, pathNumber, taskNumber);
+                        }
+                        tryLoadPhoto(photoNum + 1);
+                    };
+                    img.onerror = function() {
+                        extIndex++;
+                        tryExtension();
+                    };
+                    img.src = photoPath;
+                }
+
+                tryExtension();
+            }
+
+            function addPhotoToGrid(photoPath, index, pathNumber, taskNumber) {
+                if (index === 0) {
+                    grid.innerHTML = '';
+                }
+
+                const photoItem = document.createElement('div');
+                photoItem.className = 'photo-item';
+                photoItem.onclick = () => togglePhotoSelection(pathNumber, taskNumber, index, photoPath);
+                
+                const img = document.createElement('img');
+                img.src = photoPath;
+                img.alt = `Фото ${index + 1}`;
+                img.onerror = function() {
+                    photoItem.remove();
+                };
+                
+                const checkmark = document.createElement('div');
+                checkmark.className = 'photo-checkmark';
+                checkmark.textContent = '✓';
+                
+                photoItem.appendChild(img);
+                photoItem.appendChild(checkmark);
+                grid.appendChild(photoItem);
+            }
+
+            tryLoadPhoto(1);
+        }
+
+        // Переключить выбор фотографии
+        function togglePhotoSelection(pathNumber, taskNumber, photoIndex, photoPath) {
+            const photoItem = event.currentTarget;
+            const isSelected = photoItem.classList.contains('selected');
+            
+            if (isSelected) {
+                photoItem.classList.remove('selected');
+                const index = appState.selectedPhotos.findIndex(
+                    p => p.path === pathNumber && p.task === taskNumber
+                );
+                if (index > -1) {
+                    appState.selectedPhotos.splice(index, 1);
+                }
+            } else {
+                // Убираем выбор с других фото этого задания
+                document.querySelectorAll(`#photos-grid-${pathNumber}-${taskNumber} .photo-item.selected`).forEach(item => {
+                    item.classList.remove('selected');
+                });
+                photoItem.classList.add('selected');
+                
+                // Удаляем старый выбор для этого задания, если есть
+                const existingIndex = appState.selectedPhotos.findIndex(
+                    p => p.path === pathNumber && p.task === taskNumber
+                );
+                if (existingIndex > -1) {
+                    appState.selectedPhotos.splice(existingIndex, 1);
+                }
+                
+                // Добавляем новый выбор
+                appState.selectedPhotos.push({
+                    path: pathNumber,
+                    task: taskNumber,
+                    index: photoIndex,
+                    photoPath: photoPath
+                });
+            }
+            
+            // Активируем кнопку продолжения
+            const continueBtn = document.getElementById(`continue-${pathNumber}-${taskNumber}`);
+            const hasSelection = appState.selectedPhotos.some(
+                p => p.path === pathNumber && p.task === taskNumber
+            );
+            continueBtn.disabled = !hasSelection;
+        }
+
+        // Продолжить после выбора фото
+        function continueAfterPhotos(pathNumber, taskNumber) {
+            showPage(`narrative-${pathNumber}-${taskNumber}`);
+        }
+
+        // Переход к следующему заданию
+        function nextTask(pathNumber, taskNumber) {
+            if (taskNumber < 6) {
+                showPage(`task-${pathNumber}-${taskNumber + 1}`);
+            } else {
+                // Показываем финальную страницу
+                showFinalPage();
+            }
+        }
+
+        // Показать финальную страницу с выбранными фото
+        function showFinalPage() {
+            const gallery = document.getElementById('final-gallery');
+            gallery.innerHTML = '';
+            
+            // Сортируем фото по пути и заданию
+            const sortedPhotos = appState.selectedPhotos.sort((a, b) => {
+                if (a.path !== b.path) return a.path - b.path;
+                return a.task - b.task;
+            });
+            
+            sortedPhotos.forEach(photo => {
+                const photoItem = document.createElement('div');
+                photoItem.className = 'final-photo-item';
+                
+                const img = document.createElement('img');
+                img.src = photo.photoPath;
+                img.alt = 'Выбранное фото';
+                
+                photoItem.appendChild(img);
+                gallery.appendChild(photoItem);
+            });
+            
+            showPage('final-archive');
+        }
+
+        // Уменьшение размеров квадратов на слайде "архив"
+        const finalGallery = document.querySelector('.final-photos-grid');
+        if (finalGallery) {
+            finalGallery.style.gridTemplateColumns = 'repeat(3, 1fr)';
+            finalGallery.style.gap = '10px';
+            finalGallery.querySelectorAll('.final-photo-item').forEach(item => {
+                item.style.aspectRatio = '1';
+                item.style.height = '120px'; // Уменьшаем высоту для размещения без скролла
+            });
+        }
+
+        // Перезапустить путешествие
+        function restartJourney() {
+            appState.currentPath = null;
+            appState.currentQuestion = 0;
+            appState.selectedPhotos = [];
+            pageFlow = ['intro-1', 'intro-2', 'path-choice'];
+            showPage('intro-1');
+        }
+
+        // Выбрать другой путь
+        function chooseDifferentPath() {
+            // Удаляем все созданные страницы
+            document.querySelectorAll('[id^="path-selected-"], [id^="how-it-works-"], [id^="task-"], [id^="photo-selection-"], [id^="narrative-"]').forEach(el => el.remove());
+            
+            // Возвращаемся к выбору пути
+            appState.currentPath = null;
+            appState.currentQuestion = 0;
+            appState.selectedPhotos = [];
+            pageFlow = ['intro-1', 'intro-2', 'path-choice'];
+            // Не сбрасываем флаг pathSelectionInitialized, так как элементы остаются теми же
+            showPage('path-choice');
+        }
+
+        // Флаг для отслеживания инициализации обработчиков
+        let pathSelectionInitialized = false;
+
+        // Инициализация обработчиков кликов для выбора пути
+        function initPathSelection() {
+            if (pathSelectionInitialized) {
+                console.log('Обработчики выбора пути уже инициализированы');
+                return;
+            }
+            
+            const pathOptions = document.querySelectorAll('.path-option');
+            console.log('Найдено элементов для выбора пути:', pathOptions.length);
+            
+            if (pathOptions.length === 0) {
+                console.warn('Элементы для выбора пути не найдены');
+                return;
+            }
+            
+            pathOptions.forEach((option, index) => {
+                option.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const pathNumber = parseInt(this.getAttribute('data-path'));
+                    console.log('Клик на путь:', pathNumber, 'Задачи инициализированы:', !!appState.tasksData);
+                    selectPath(pathNumber);
+                });
+                console.log(`Обработчик добавлен для пути ${index + 1}`);
+            });
+            
+            pathSelectionInitialized = true;
+        }
+
+        // Инициализация
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Приложение инициализировано');
+            console.log('Задачи доступны:', appState.tasksData);
+            console.log('Количество маршрутов:', appState.tasksData ? appState.tasksData.routes.length : 0);
+            
+            // Устанавливаем фоны для всех страниц
+            document.querySelectorAll('.page').forEach(page => {
+                setRandomBackground(page);
+            });
+            
+            document.getElementById('intro-1').querySelector('.next-btn').textContent = 'Начать путешествие';
+            document.getElementById('intro-2').querySelector('.next-btn').textContent = 'Продолжить';
+
+            const paragraphs = document.querySelectorAll('p');
+            paragraphs.forEach(p => {
+                p.style.textIndent = '2em';
+                p.style.textAlign = 'justify';
+            });
+
+            const finalGallery = document.querySelector('.final-photos-grid');
+            if (finalGallery) {
+                finalGallery.style.gridTemplateColumns = 'repeat(3, 1fr)';
+                finalGallery.style.gap = '10px';
+                finalGallery.querySelectorAll('.final-photo-item').forEach(item => {
+                    item.style.aspectRatio = '1';
+                    item.style.height = '120px'; 
+                });
+            }
+
+            // Инициализируем обработчики выбора пути
+            initPathSelection();
+        });
+
+        // Добавляем обработчик клика на шапку проекта
+        document.addEventListener('DOMContentLoaded', function() {
+            const projectTitleElements = document.querySelectorAll('.project-title');
+            projectTitleElements.forEach(element => {
+                element.style.cursor = 'pointer';
+                element.addEventListener('click', function() {
+                    alert(`Создатели:\n- ИТМО, DH-магистратура, 1 курс, 2025\n- Илья Мусаткин, Ирина Дементьева, Матвей Гребелин, Лиза Краснова\n\nПерспективы проекта:\nследующие возможные шаги:\n1. выкладывание в открытый доступ\n2. проработка нарратива, добавление альтернативных маршрутов\n3. функционал загрузки фотографий`);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
